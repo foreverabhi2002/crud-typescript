@@ -14,17 +14,17 @@ router.get("/", async(req: Request, res: Response) => {
 });
 
 router.post("/add", async(req: Request, res: Response) => {
-    const title = req.body.title;
-    const description = req.body.description;
-    Todo.set({
+    const { title, description } = req.body;
+    const todo = new Todo({
         title: title,
         description: description
-    }).save((err: any, todo: any) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.json(todo);
-        }
+    });
+    todo.save()
+    .then((todo: any) => {
+        res.status(200).json({"todo": "todo added successfully"});
+    })
+    .catch((err: any) => {
+        res.status(400).send("adding new todo failed");
     });
 });
 
