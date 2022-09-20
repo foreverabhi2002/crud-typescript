@@ -15,17 +15,35 @@ router.get("/", async(req: Request, res: Response) => {
 
 router.post("/add", async(req: Request, res: Response) => {
     const { title, description } = req.body;
-    const todo = new Todo({
-        title: title,
-        description: description
-    });
-    todo.save()
-    .then((todo: any) => {
-        res.status(200).json({"todo": "todo added successfully"});
-    })
-    .catch((err: any) => {
-        res.status(400).send("adding new todo failed");
+    Todo.create({ title, description }, (err: any, todo: any) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(todo);
+        }
     });
 });
+
+router.put("/update/:id", async(req: Request, res: Response) => {
+    const { title, description } = req.body;
+    Todo.findByIdAndUpdate(req.params.id, { title, description }, (err: any, todo: any) => {
+        if(err) {
+            console.log(err);
+        } else {
+            res.json(todo);
+        }  
+    });
+});
+
+router.delete("/delete/:id", async(req: Request, res: Response) => {
+    Todo.findByIdAndRemove(req.params.id, (err: any, todo: any) => {
+        if(err) {
+            console.log(err);
+        } else {
+            res.json(todo);
+        }
+    });
+});
+
 
 export { router };
